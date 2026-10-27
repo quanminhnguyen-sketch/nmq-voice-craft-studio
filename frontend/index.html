@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nguyễn Minh Quân VoiceCraft Studio - Chuyển Đổi Văn Bản Thành Giọng Nói AI Đỉnh Cao</title>
+  <meta name="description" content="Công cụ Text-to-Speech (TTS) AI chất lượng phòng thu, giọng đọc tự nhiên đa ngôn ngữ với tiếng Việt Hoài My, Nam Minh miễn phí.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="relative min-h-screen text-slate-800 dark:text-slate-100 flex flex-col justify-between">
+
+  <!-- Glowing Background Orbs -->
+  <div class="bg-glow-orb-1"></div>
+  <div class="bg-glow-orb-2"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        
+        <!-- App Logo & Branding -->
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400">
+                Nguyễn Minh Quân VoiceCraft Studio
+              </h1>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:bg-indigo-400/20 dark:text-indigo-300 border border-indigo-500/20">PRO</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">AI Text-to-Speech Engine • Neural Voices</p>
+          </div>
+        </div>
+
+        <!-- Right Header Actions -->
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <!-- Backend Status Pill -->
+          <div id="backend-status-pill" class="flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="backend-status-text">Đang kết nối...</span>
+          </div>
+
+          <!-- Dark / Light Mode Toggle -->
+          <button id="theme-toggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm" title="Chuyển chế độ Sáng / Tối">
+            <!-- Sun Icon -->
+            <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <!-- Moon Icon -->
+            <svg id="theme-icon-moon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+      <!-- Presets & Quick Mode Bar -->
+      <div class="glass-panel p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span>Kịch bản tối ưu sẵn:</span>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-2" id="preset-buttons">
+          <button data-rate="0" data-pitch="0" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border border-slate-200/60 dark:border-slate-700">
+            📰 Chuẩn mực / Tin tức
+          </button>
+          <button data-rate="-10" data-pitch="-3" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border border-slate-200/60 dark:border-slate-700">
+            📖 Kể chuyện / Audio Book
+          </button>
+          <button data-rate="25" data-pitch="3" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border border-slate-200/60 dark:border-slate-700">
+            ⚡ TikTok / Reels cuốn hút
+          </button>
+          <button data-rate="-15" data-pitch="-4" class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border border-slate-200/60 dark:border-slate-700">
+            ☕ Thư giãn / Podcast
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Studio Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Text Input & Generation Trigger (7 Cols) -->
+        <div class="lg:col-span-7 flex flex-col space-y-6">
+
+          <!-- Textarea Card -->
+          <div class="glass-panel p-6 flex flex-col flex-grow">
+            <div class="flex items-center justify-between mb-3">
+              <label for="text-input" class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-2">
+                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span>Nội dung văn bản</span>
+              </label>
+
+              <!-- Text Quick Actions -->
+              <div class="flex items-center space-x-2">
+                <button id="btn-paste-text" class="px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 bg-slate-100 dark:bg-slate-800 rounded-md transition-colors flex items-center space-x-1" title="Dán từ Clipboard">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <span>Dán</span>
+                </button>
+                <button id="btn-clear-text" class="px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100 dark:bg-slate-800 rounded-md transition-colors flex items-center space-x-1" title="Xóa nội dung">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  <span>Xóa</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Big Text Area -->
+            <div class="relative flex-grow">
+              <textarea 
+                id="text-input" 
+                rows="9"
+                placeholder="Nhập hoặc dán đoạn văn bản bạn muốn chuyển đổi thành giọng nói tại đây (Hỗ trợ tiếng Việt, tiếng Anh và hơn 50 ngôn ngữ)..."
+                class="w-full h-full p-4 text-base bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-y transition-all text-slate-800 dark:text-slate-100 placeholder-slate-400"
+              >Chào mừng bạn đến với Nguyễn Minh Quân VoiceCraft Studio! Đây là giải pháp chuyển đổi văn bản thành giọng nói AI thông minh với âm thanh tự nhiên, mượt mà và hoàn toàn miễn phí. Hãy thử chọn các giọng đọc khác nhau và lắng nghe điều kỳ diệu!</textarea>
+            </div>
+
+            <!-- Text Stats & Quick Samples -->
+            <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center space-x-4 text-slate-500 dark:text-slate-400">
+                <span>Ký tự: <strong id="char-count" class="text-indigo-600 dark:text-indigo-400">0</strong></span>
+                <span>Từ: <strong id="word-count" class="text-indigo-600 dark:text-indigo-400">0</strong></span>
+                <span>Ước tính thời lượng: <strong id="est-duration" class="text-slate-700 dark:text-slate-300">~0s</strong></span>
+              </div>
+
+              <!-- Sample Text Chips -->
+              <div class="flex items-center space-x-1.5 flex-wrap">
+                <span class="text-slate-400 mr-1">Mẫu nhanh:</span>
+                <button class="sample-chip text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-slate-600 dark:text-slate-300 transition-colors" data-type="intro">
+                  🇻🇳 Giới thiệu
+                </button>
+                <button class="sample-chip text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-slate-600 dark:text-slate-300 transition-colors" data-type="news">
+                  📰 Thời sự
+                </button>
+                <button class="sample-chip text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-slate-600 dark:text-slate-300 transition-colors" data-type="story">
+                  📚 Truyện đọc
+                </button>
+                <button class="sample-chip text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 text-slate-600 dark:text-slate-300 transition-colors" data-type="en">
+                  🇺🇸 English Tech
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Primary Generate Button -->
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            <button id="btn-generate" class="btn-primary w-full py-4 px-6 rounded-2xl font-bold text-base flex items-center justify-center space-x-3 shadow-lg">
+              <svg id="generate-icon" class="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <!-- Loading spinner (hidden by default) -->
+              <svg id="generate-spinner" class="w-6 h-6 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span id="generate-btn-text">Tạo Âm Thanh Ngay</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Voice Selection & Audio Fine Tuning (5 Cols) -->
+        <div class="lg:col-span-5 flex flex-col space-y-6">
+
+          <!-- Voice Selector Panel -->
+          <div class="glass-panel p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-2">
+                <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>Lựa chọn giọng đọc (Voice)</span>
+              </h2>
+              <span id="voice-count-badge" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-medium">Đang tải...</span>
+            </div>
+
+            <!-- Language Filter Pills -->
+            <div class="flex flex-wrap gap-1.5" id="lang-filter-pills">
+              <button class="lang-pill active px-2.5 py-1 text-xs rounded-lg font-semibold bg-indigo-600 text-white shadow-sm" data-lang="all">Tất cả</button>
+              <button class="lang-pill px-2.5 py-1 text-xs rounded-lg font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" data-lang="vi">🇻🇳 Tiếng Việt</button>
+              <button class="lang-pill px-2.5 py-1 text-xs rounded-lg font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" data-lang="en">🇺🇸 English</button>
+              <button class="lang-pill px-2.5 py-1 text-xs rounded-lg font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" data-lang="asia">🌏 Châu Á</button>
+            </div>
+
+            <!-- Gender Filter -->
+            <div class="flex items-center space-x-2 pt-1 text-xs">
+              <span class="text-slate-500 dark:text-slate-400">Giới tính:</span>
+              <div class="flex space-x-1" id="gender-filter">
+                <button class="gender-btn active px-2 py-0.5 rounded font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300" data-gender="all">Tất cả</button>
+                <button class="gender-btn px-2 py-0.5 rounded font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-gender="Female">♀ Nữ</button>
+                <button class="gender-btn px-2 py-0.5 rounded font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-gender="Male">♂ Nam</button>
+              </div>
+            </div>
+
+            <!-- Voice Dropdown / Select -->
+            <div>
+              <select id="voice-select" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none text-slate-800 dark:text-slate-200">
+                <option value="vi-VN-HoaiMyNeural" selected>🇻🇳 Hoài My (Nữ - Truyền cảm, chuẩn tự nhiên)</option>
+                <option value="vi-VN-NamMinhNeural">🇻🇳 Nam Minh (Nam - Trầm ấm, chuyên nghiệp)</option>
+              </select>
+            </div>
+
+            <!-- Selected Voice Info & Preview Button -->
+            <div id="voice-preview-card" class="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 flex items-center justify-between gap-3">
+              <div class="flex items-center space-x-3 min-w-0">
+                <div id="voice-flag-avatar" class="text-2xl flex-shrink-0">🇻🇳</div>
+                <div class="min-w-0">
+                  <div class="flex items-center space-x-2">
+                    <span id="voice-info-name" class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">Hoài My (Nữ)</span>
+                    <span id="voice-info-gender" class="text-[10px] px-1.5 py-0.2 rounded font-semibold bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-300">Nữ</span>
+                  </div>
+                  <p id="voice-info-desc" class="text-xs text-slate-500 dark:text-slate-400 truncate">Giọng nữ truyền cảm, dịu dàng, phát âm chuẩn tự nhiên</p>
+                </div>
+              </div>
+
+              <button id="btn-preview-voice" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shadow-sm flex items-center space-x-1.5 transition-all" title="Nghe thử giọng này">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+                <span>Nghe thử</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Audio Sliders Panel -->
+          <div class="glass-panel p-6 space-y-5">
+            <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-2">
+              <svg class="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              </svg>
+              <span>Tinh chỉnh thông số âm thanh</span>
+            </h2>
+
+            <!-- Rate / Speed Slider -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-600 dark:text-slate-400">Tốc độ đọc (Speed):</span>
+                <div class="flex items-center space-x-2">
+                  <span id="rate-badge" class="px-2 py-0.5 rounded font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800">1.0x (0%)</span>
+                  <button id="reset-rate" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" title="Đặt lại tốc độ">↺</button>
+                </div>
+              </div>
+              <input type="range" id="rate-slider" min="-50" max="100" value="0" step="5">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>Chậm (0.5x)</span>
+                <span>Mặc định (1.0x)</span>
+                <span>Nhanh (2.0x)</span>
+              </div>
+            </div>
+
+            <!-- Pitch Slider -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-600 dark:text-slate-400">Cao độ giọng (Pitch):</span>
+                <div class="flex items-center space-x-2">
+                  <span id="pitch-badge" class="px-2 py-0.5 rounded font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800">0Hz</span>
+                  <button id="reset-pitch" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" title="Đặt lại cao độ">↺</button>
+                </div>
+              </div>
+              <input type="range" id="pitch-slider" min="-50" max="50" value="0" step="2">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>Trầm (-50Hz)</span>
+                <span>Tự nhiên (0Hz)</span>
+                <span>Bổng (+50Hz)</span>
+              </div>
+            </div>
+
+            <!-- Volume Slider -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-600 dark:text-slate-400">Âm lượng (Volume):</span>
+                <div class="flex items-center space-x-2">
+                  <span id="vol-badge" class="px-2 py-0.5 rounded font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800">100% (+0%)</span>
+                  <button id="reset-vol" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" title="Đặt lại âm lượng">↺</button>
+                </div>
+              </div>
+              <input type="range" id="vol-slider" min="-50" max="50" value="0" step="5">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>Nhẹ (-50%)</span>
+                <span>Chuẩn (100%)</span>
+                <span>To (+50%)</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Integrated Audio Player Section -->
+      <section id="player-container" class="glass-panel p-6 shadow-xl transition-all duration-300">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+
+          <!-- Left Info & Waveform -->
+          <div class="flex items-center space-x-4 w-full lg:w-auto">
+            <!-- Animated Sound Wave Indicator -->
+            <div id="sound-wave-anim" class="sound-wave paused text-indigo-500 bg-indigo-50 dark:bg-indigo-950/50 p-3 rounded-2xl border border-indigo-200 dark:border-indigo-800 flex-shrink-0">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+
+            <div class="min-w-0">
+              <div class="flex items-center space-x-2">
+                <h3 id="player-title" class="text-base font-bold text-slate-800 dark:text-slate-100 truncate">
+                  Sẵn sàng phát âm thanh
+                </h3>
+                <span id="player-format-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-500 dark:bg-indigo-400/20 dark:text-indigo-300">MP3 24kHz</span>
+              </div>
+              <p id="player-subtitle" class="text-xs text-slate-500 dark:text-slate-400 truncate">Nhấn nút Tạo Âm Thanh để bắt đầu chuyển đổi</p>
+            </div>
+          </div>
+
+          <!-- Center Audio Controls -->
+          <div class="flex flex-col items-center space-y-2 w-full lg:max-w-xl">
+            <!-- Hidden Native Audio Element -->
+            <audio id="native-audio" preload="metadata"></audio>
+
+            <!-- Seekbar & Timestamps -->
+            <div class="w-full flex items-center space-x-3 text-xs text-slate-500 font-mono">
+              <span id="time-current">00:00</span>
+              <input type="range" id="seek-bar" min="0" max="100" value="0" class="flex-grow cursor-pointer" disabled>
+              <span id="time-total">00:00</span>
+            </div>
+
+            <!-- Buttons: Play, Pause, Speeds -->
+            <div class="flex items-center space-x-4">
+              <!-- Replay 5s -->
+              <button id="btn-replay-5" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" title="Lùi 5 giây" disabled>
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
+                </svg>
+              </button>
+
+              <!-- Main Play / Pause Button -->
+              <button id="btn-play-pause" class="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform" title="Phát / Tạm dừng" disabled>
+                <!-- Play Icon -->
+                <svg id="icon-play" class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+                <!-- Pause Icon (hidden initially) -->
+                <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </button>
+
+              <!-- Forward 5s -->
+              <button id="btn-forward-5" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" title="Tiến 5 giây" disabled>
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
+                </svg>
+              </button>
+
+              <!-- Playback Speed Menu -->
+              <select id="playback-speed-select" class="text-xs font-semibold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 outline-none" title="Tốc độ phát">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1.0x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2.0x</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Right Action: Download Button -->
+          <div class="flex items-center space-x-3 w-full lg:w-auto justify-end">
+            <button id="btn-download" class="w-full sm:w-auto px-5 py-3 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 flex items-center justify-center space-x-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Tải Xuống MP3</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- History of Generated Audios Section -->
+      <section class="glass-panel p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="text-base font-bold text-slate-800 dark:text-slate-100">Lịch sử tạo gần đây</h3>
+          </div>
+          <button id="btn-clear-history" class="text-xs text-slate-400 hover:text-rose-500 transition-colors">Xóa lịch sử</button>
+        </div>
+
+        <div id="history-list" class="divide-y divide-slate-200/60 dark:divide-slate-800 text-sm">
+          <p id="history-empty" class="text-center py-6 text-slate-400 text-xs italic">
+            Chưa có tệp âm thanh nào được tạo trong phiên này.
+          </p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md py-6 text-xs text-slate-500 dark:text-slate-400">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+          <span>Nguyễn Minh Quân VoiceCraft Studio v1.0 • Phát triển bởi Nguyễn Minh Quân</span>
+        </div>
+        <div class="flex items-center space-x-6">
+          <span>Hỗ trợ: Microsoft Neural TTS Engine</span>
+          <span>Khởi chạy: <code>run.bat</code></span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Main JavaScript Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>
